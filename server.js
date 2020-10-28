@@ -8,6 +8,7 @@ const sequelize = new Sequelize({
   storage: './db.sqlite3',
 });
 
+// MODEL
 const Post = sequelize.define('Post', {
   title: {
     type: DataTypes.STRING,
@@ -20,10 +21,13 @@ const Post = sequelize.define('Post', {
   },
 });
 app.use(express.json())
+
+// VIEW
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
+// CONTROLLER
 // Create entity
 app.post('/api/posts', async (req, res) => {
   const { body } = req;
@@ -98,10 +102,27 @@ app.delete('/api/posts/:id', async (req, res) => {
 
 })
 
+// With async/await
 app.get('/api/posts', async (req, res) => {
   const posts = await Post.findAll();
-  res.json(posts);
+  // const articles = await Article.findAll()
+  // res.json({ posts, articles });
+  res.json(posts)
 });
+
+// w/o async-await
+// app.get('/api/posts', (req, res) => {
+//   Post.findAll().then(posts => {
+//     // posts is in the upper scope
+//     Article.findAll().then(articles => {
+//       // articles, and posts
+//       res.json({
+//         articles,
+//         posts
+//       })
+//     })
+//   });
+// });
 
 app.listen(3001, async () => {
   await sequelize.authenticate();
